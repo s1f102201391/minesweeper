@@ -1,6 +1,5 @@
 .container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
@@ -8,8 +7,91 @@
   padding: 0 0.5rem;
 }
 
-.sampleStyle {
+/* .sampleStyle {
   width: 30px;
   height: 30px;
   background: url('../assets/images/icons.png') no-repeat;
+} */
+
+.boardstyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #bbb;
+  border: 5px solid #7b7b7b;
+  border-right-color: #7b7b7b;
+  border-bottom-color: #7b7b7b;
 }
+
+.head {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.easy,
+.middle,
+.hard,
+.custom {
+  display: flex;
+  justify-content: center;
+  padding: 1%;
+  cursor: pointer;
+}
+
+.gamehead {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 5px;
+  background: #bbb;
+}
+
+.flag,
+.reset,
+.timer {
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 35px;
+  color: #f00;
+  background: #000;
+  border: 2px outset #888;
+  box-shadow: 1px 1px 2px #888; /* タイマー、リセット、フラッグに適用する影 */
+}
+
+.reset {
+  width: 30px;
+  height: 30px;
+  background-image: url('../assets/images/icons.png');
+}
+
+.backgroundmap {
+  display: grid;
+  grid-template-columns: repeat(9, 20px); /* 16列に設定 */
+  gap: 2px;
+}
+
+.cellStyle {
+  width: 20px;
+  height: 20px;
+  background: #bdbdbd;
+  border: solid 1px;
+  border-color: #fff #7b7b7b #7b7b7b #fff;
+  box-shadow: 1px 1px 1px #888; /* セルに適用する影 */
+}
+
+.allbackground {
+  display: flex;
+}
+
+.allall {
+  display: flex;
+  flex-direction: column;
+}
+
+/* .sampleStyle {
+  width: 30px;
+  height: 30px;
+  background-image: url('../assets/images/icons.png');
+} */
