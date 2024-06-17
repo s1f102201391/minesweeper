@@ -68,13 +68,13 @@
 
 .backgroundmap {
   display: grid;
-  grid-template-columns: repeat(9, 20px); /* 16列に設定 */
+  grid-template-columns: repeat(9, 30px); /* 16列に設定 */
   gap: 2px;
 }
 
 .cellStyle {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   background: #bdbdbd;
   border: solid 1px;
   border-color: #fff #7b7b7b #7b7b7b #fff;

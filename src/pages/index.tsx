@@ -19,7 +19,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const bombCount = 10;
+  // const bombCount = 10;
   // 0 -> ボム無し
   // 1 -> ボム有り
   const [bombMap, setBombMap] = useState([
@@ -34,10 +34,10 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
-  const isFailure = userInputs.some((row, y) =>
-    row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-  );
+  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  // const isFailure = userInputs.some((row, y) =>
+  //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
+  // );
 
   // -1 -> 石
   // 0 -> 画像無しセル
@@ -63,28 +63,35 @@ const Home = () => {
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
   }
   // クリックしたとき
+  const newBombMap = structuredClone(bombMap);
+  const board = structuredClone(bombMap);
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-    if (userInputs[y][x] !== 0) {
-      userInputs[y][x] = 1;
-      const inputflat = userInputs.flat();
-      const inputfilter = inputflat.filter((v) => v === 1);
+    if (bombMap[y][x] === 0) {
+      newBombMap[y][x] = 2;
+      const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
+      console.log(inputfilter(2));
+
       //初回クリック時
-      if (inputfilter.length === 1) {
+      if (inputfilter(2) === 1) {
         let i = 0;
-        const board = structuredClone(bombMap);
-        while (i < 11) {
+        while (inputfilter(1) < 10) {
           const nx = getRandomInt(0, 8);
           const ny = getRandomInt(0, 8);
-          userInputs[ny][nx] = 1;
+          newBombMap[ny][nx] = 1;
           i++;
+          console.log(i);
+          console.log(newBombMap[ny][nx]);
         }
-        setBombMap(board);
+        newBombMap[y][x] = 0;
       }
     }
+
+    setBombMap(newBombMap);
+    console.table(newBombMap);
   };
 
-  console.table(userInputs);
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
@@ -107,7 +114,7 @@ const Home = () => {
             </div>
             {/* マップ */}
             <div className={styles.backgroundmap}>
-              {userInputs.map((row, y) =>
+              {board.map((row, y) =>
                 row.map((bomb, x) => (
                   <div
                     className={styles.cellStyle}
@@ -115,11 +122,11 @@ const Home = () => {
                     onClick={() => clickHandler(x, y)}
                     style={{
                       backgroundColor: bomb === 1 ? '#00ff1a' : '#bbb',
-                      ...(bomb === 2 && { backgroundPosition: `-330px 0` }),
+                      ...(bomb === 2 && { backgroundPosition: `-300px 0` }),
                     }}
                   >
                     {bomb !== 0 && (
-                      <div className={styles.reset} style={{ backgroundPosition: `-330px 0` }} />
+                      <div className={styles.reset} style={{ backgroundPosition: `-360px 0` }} />
                     )}
                   </div>
                 )),
