@@ -2,12 +2,12 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [sampleVal, setSampleVal] = useState(0);
+  // const [sampleVal, setSampleVal] = useState(0);
   // 0 -> 未クリック
   // 1 -> 左クリック
   // 2 -> はてな
   // 3 -> 旗
-  const [userInputs, setUserInputs] = useState([
+  const [userInputs, setUserInputs] = useState<(0 | 1 | 2 | 3)[][]>([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -45,6 +45,17 @@ const Home = () => {
   // 9 -> 石とはてな
   // 10 -> 石と旗
   // 11 -> ボムセル
+  const board: number[][] = [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  ];
 
   const directions = [
     [0, 1], //下
@@ -56,6 +67,9 @@ const Home = () => {
     [-1, 1], //左下
     [-1, -1], //左上
   ];
+
+  //右クリック
+
   //ランダム取得
   function getRandomInt(min: number, max: number) {
     // min = Math.ceil(min);
@@ -64,33 +78,60 @@ const Home = () => {
   }
   // クリックしたとき
   const newBombMap = structuredClone(bombMap);
-  const board = structuredClone(bombMap);
+  const newUserInputs = structuredClone(userInputs);
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     if (bombMap[y][x] === 0) {
       newBombMap[y][x] = 2;
       const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
-      console.log(inputfilter(2));
 
-      //初回クリック時
+      //初回クリック時爆弾設置
       if (inputfilter(2) === 1) {
-        let i = 0;
         while (inputfilter(1) < 10) {
           const nx = getRandomInt(0, 8);
           const ny = getRandomInt(0, 8);
           newBombMap[ny][nx] = 1;
-          i++;
-          console.log(i);
           console.log(newBombMap[ny][nx]);
+          if (newBombMap[ny][nx] === 1) {
+            board[ny][nx] = 11;
+          }
         }
         newBombMap[y][x] = 0;
+        board[y][x] = 0;
       }
+      console.log(inputfilter(1));
     }
 
     setBombMap(newBombMap);
     console.table(newBombMap);
+    console.table(board);
   };
+  //81マス全部の8方向の爆弾数n
+  let n = 0;
+  const aroundBomb = () => {
+    for (let d = 0; d < 9; d++) {
+      for (let c = 0; c < 9; c++) {
+        if (newBombMap[c][d] !== 1) {
+          for (const item of directions) {
+            const [a, b] = item;
+            const X = d + a;
+            const Y = c + b;
+
+            if (
+              newBombMap[Y] !== undefined &&
+              newBombMap[Y][X] !== undefined &&
+              newBombMap[Y][X] === 1
+            ) {
+              n += 1;
+              console.log(n);
+            }
+          }
+        }
+      }
+    }
+  };
+  aroundBomb;
 
   return (
     <div className={styles.container}>
@@ -121,13 +162,16 @@ const Home = () => {
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
                     style={{
-                      backgroundColor: bomb === 1 ? '#00ff1a' : '#bbb',
-                      ...(bomb === 2 && { backgroundPosition: `-300px 0` }),
+                      backgroundColor: bomb === -1 ? '#00ff1a' : '#bbb',
+                      ...(bomb === 0 && { backgroundPosition: `${-30 * n}px 0` }),
                     }}
                   >
-                    {bomb !== 0 && (
-                      <div className={styles.reset} style={{ backgroundPosition: `-360px 0` }} />
-                    )}
+                    {/* {bomb !== 0 && (
+                      <div
+                        className={styles.reset}
+                        style={{ backgroundPosition: `${-30 * n}px 0` }}
+                      />
+                    )} */}
                   </div>
                 )),
               )}
