@@ -70,56 +70,17 @@ const Home = () => {
 
   //右クリック
 
-  //81マス全部の8方向の爆弾数count
-  let count = 0;
-  // const aroundBomb = () => {
-  //   // const a = 1;
-  //   for (let d = 0; d < 9; d++) {
-  //     for (let c = 0; c < 9; c++) {
-  //       if (bombMap[c][d] !== 1) {
-  //         for (const item of directions) {
-  //           const [a, b] = item;
-  //           const X = d + a;
-  //           const Y = c + b;
-  //           if (bombMap[Y] !== undefined && bombMap[Y][X] !== undefined) {
-  //             if (bombMap[Y][X] === 1) {
-  //               count++;
-  //               if (userInputs[c][d] === 1) {
-  //                 if (bombMap[c][d] !== 1) {
-  //                   if (count > 0) {
-  //                     newBoard[c][d] = count;
-  //                     // return (
-  //                     //   <div className={styles.reset} style={{ backgroundPosition: `${-30 * n}px 0` }} />
-  //                     // );
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //         if (count > 0) {
-  //           count = 0;
-  //         }
-  //       }
-  //     }
-  //     // console.log(a);
-  //   }
-  //   // setBombMap(newBombMap);
-  //   // setUserInputs(newUserInputs);
-  //   // setBoard(newBoard);
-  // };
-  // console.log(count);
-
   //ランダム取得
   function getRandomInt(min: number, max: number) {
     // min = Math.ceil(min);
     // max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min) + min);
   }
   // クリックしたとき
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
   const newBoard = structuredClone(board);
+  let count = 0;
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
@@ -133,7 +94,6 @@ const Home = () => {
           const nx = getRandomInt(0, 8);
           const ny = getRandomInt(0, 8);
           newBombMap[ny][nx] = 1;
-          // console.log(newBombMap[ny][nx]);
           if (newBombMap[ny][nx] === newBombMap[y][x]) {
             return;
           }
@@ -147,12 +107,10 @@ const Home = () => {
     if (userInputs[y][x] === 0) {
       newUserInputs[y][x] = 1;
     }
-    // const changeBoard = (x: number, y: number) => {
+    //81マス全部の8方向の爆弾数count
     if (newUserInputs[y][x] === 1) {
       if (newBombMap[y][x] === 0) {
         newBoard[y][x] = 0;
-        // const aroundBomb = () => {
-        // const a = 1;
         for (let d = 0; d < 9; d++) {
           for (let c = 0; c < 9; c++) {
             if (newBombMap[c][d] !== 1) {
@@ -167,12 +125,6 @@ const Home = () => {
                       if (newBombMap[c][d] !== 1) {
                         if (count > 0) {
                           newBoard[c][d] = count;
-                          // return (
-                          //   // <div
-                          //   //   className={styles.reset}
-                          //   //   style={{ backgroundPosition: `${-30 * count}px 0` }}
-                          //   // />
-                          // );
                         }
                       }
                     }
@@ -184,18 +136,10 @@ const Home = () => {
               count = 0;
             }
           }
-          // console.log(a);
-          // }
-          // setBombMap(newBombMap);
-          // setUserInputs(newUserInputs);
-          // setBoard(newBoard);
         }
       }
     }
-    // };s
-    // changeBoard;
-    // aroundBomb();
-    // aroundBomb();
+
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
     setBoard(newBoard);
