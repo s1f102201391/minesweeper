@@ -68,8 +68,6 @@ const Home = () => {
     [-1, -1], //左上
   ];
 
-  //右クリック
-
   //ランダム取得
   function getRandomInt(min: number, max: number) {
     // min = Math.ceil(min);
@@ -80,6 +78,15 @@ const Home = () => {
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
   const newBoard = structuredClone(board);
+
+  //右クリック
+  const clickR = (x: number, y: number) => {
+    //デフォルトの右クリックのメニューが出ないようにする
+    document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+    if (newUserInputs[y][x] === 1) return;
+    newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    setUserInputs(newUserInputs);
+  };
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
@@ -143,6 +150,7 @@ const Home = () => {
       }
     }
   }
+  console.table(newUserInputs);
 
   return (
     <div className={styles.container}>
@@ -172,6 +180,7 @@ const Home = () => {
                     className={styles.cellStyle}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
+                    onContextMenu={() => clickR(x, y)}
                     style={{
                       backgroundColor: bomb === -1 ? '#e4e4e4' : '#bbb',
                       // ...(bomb === 0 && { backgroundPosition: `${-30 * n}px 0` }),
