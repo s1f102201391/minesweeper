@@ -56,6 +56,8 @@ const Home = () => {
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ]);
 
+  const noboard = structuredClone(board);
+
   const directions = [
     [0, 1], //下
     [0, -1], //上
@@ -85,13 +87,6 @@ const Home = () => {
     if (newUserInputs[y][x] === 1) return;
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
-    if (newUserInputs[y][x] === 2) {
-      newBoard[y][x] = 10;
-    }
-    if (newUserInputs[y][x] === 0) {
-      newBoard[y][x] = -1;
-    }
-    setBoard(newBoard);
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -125,16 +120,7 @@ const Home = () => {
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
-    setBoard(newBoard);
-    if (isFailure(newUserInputs, newBombMap)) {
-      for (let d = 0; d < 9; d++) {
-        for (let c = 0; c < 9; c++) {
-          if (newBombMap[c][d] === 1) {
-            newBoard[c][d] = 11;
-          }
-        }
-      }
-    }
+
     setBoard(newBoard);
   };
 
@@ -168,7 +154,39 @@ const Home = () => {
   }
   console.table(newUserInputs);
   console.table(newBoard);
-
+  //旗置く
+  for (let d = 0; d < 9; d++) {
+    for (let c = 0; c < 9; c++) {
+      if (userInputs[c][d] === 2) {
+        noboard[c][d] = 10;
+      }
+      if (userInputs[c][d] === 0) {
+        noboard[c][d] = -1;
+      }
+    }
+  }
+  //爆弾
+  if (isFailure(userInputs, bombMap)) {
+    for (let d = 0; d < 9; d++) {
+      for (let c = 0; c < 9; c++) {
+        if (bombMap[c][d] === 1) {
+          noboard[c][d] = 11;
+        }
+      }
+    }
+  }
+  // 爆弾チェックと周囲の爆弾数を更新
+  for (let d = 0; d < 9; d++) {
+    for (let c = 0; c < 9; c++) {
+      if (userInputs[c][d] === 1) {
+        if (bombMap[c][d] === 1) {
+          noboard[c][d] = 11; // 爆弾があるマスを示す特別な値
+        } else {
+          blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
+        }
+      }
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
@@ -206,7 +224,7 @@ const Home = () => {
             </div>
             {/* マップ */}
             <div className={styles.backgroundmap}>
-              {board.map((row, y) =>
+              {noboard.map((row, y) =>
                 row.map((bomb, x) => (
                   <div
                     className={styles.cellStyle}
