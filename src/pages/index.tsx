@@ -80,63 +80,33 @@ const Home = () => {
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
   const newBoard = structuredClone(board);
-  let count = 0;
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-    if (bombMap[y][x] === 0) {
+    if (userInputs[y][x] === 0) {
       newUserInputs[y][x] = 1;
-      const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
 
-      //初回クリック時爆弾設置
+      // 初回クリック時の爆弾設置
+      const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
       if (inputfilter(1) === 0) {
+        // まだ爆弾が設置されていない場合
         while (inputfilter(1) < 10) {
+          // 爆弾が10個になるまで設置
           const nx = getRandomInt(0, 8);
           const ny = getRandomInt(0, 8);
-          newBombMap[ny][nx] = 1;
-          if (newBombMap[ny][nx] === newBombMap[y][x]) {
-            return;
+          if (nx !== x || ny !== y) {
+            // クリックしたマスには設置しない
+            newBombMap[ny][nx] = 1;
           }
-          // if (newBombMap[ny][nx] === 1) {
-          //   board[ny][nx] = 11;
-          // }
         }
       }
       console.log(inputfilter(1));
-    }
-    if (userInputs[y][x] === 0) {
-      newUserInputs[y][x] = 1;
-    }
-    //81マス全部の8方向の爆弾数count
-    if (newUserInputs[y][x] === 1) {
-      if (newBombMap[y][x] === 0) {
-        newBoard[y][x] = 0;
-        for (let d = 0; d < 9; d++) {
-          for (let c = 0; c < 9; c++) {
-            if (newBombMap[c][d] !== 1) {
-              for (const item of directions) {
-                const [a, b] = item;
-                const X = d + a;
-                const Y = c + b;
-                if (newBombMap[Y] !== undefined && newBombMap[Y][X] !== undefined) {
-                  if (newBombMap[Y][X] === 1) {
-                    count++;
-                    if (newUserInputs[c][d] === 1) {
-                      if (newBombMap[c][d] !== 1) {
-                        if (count > 0) {
-                          newBoard[c][d] = count;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            if (count > 0) {
-              count = 0;
-            }
-          }
-        }
+
+      // 爆弾チェックと周囲の爆弾数を更新
+      if (newBombMap[y][x] === 1) {
+        newBoard[y][x] = 11; // 爆弾があるマスを示す特別な値
+      } else {
+        blank(x, y); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
       }
     }
 
@@ -145,24 +115,34 @@ const Home = () => {
     setBoard(newBoard);
   };
 
-  // board表示
-  // const changeBoard = (x: number, y: number) => {
-  //   if (userInputs[y][x] === 1) {
-  //     if (bombMap[y][x] === 0) {
-  //       newBoard[y][x] = 0;
-  //     }
-  //   }
-  //   if (newUserInputs[y][x] === 1) {
-  //     if (newBombMap[y][x] !== 1 && n > 0) {
-  //       board[y][x] = n;
-  //     }
-  //   }
-  // };
-  // changeBoard;
-
-  // console.table(userInputs);
-  console.table(bombMap);
-  console.table(newBoard);
+  function blank(x: number, y: number) {
+    let count = 0;
+    for (const [dx, dy] of directions) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (newBoard[ny] !== undefined && newBoard[ny][nx] !== undefined) {
+        if (newBombMap[ny][nx] === 1) {
+          count++;
+        }
+      }
+    }
+    newBoard[y][x] = count;
+    if (count === 0) {
+      // このマスの周りに爆弾がない場合
+      for (const [dx, dy] of directions) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (
+          newBoard[ny] !== undefined &&
+          newBoard[ny][nx] !== undefined &&
+          newUserInputs[ny][nx] === 0
+        ) {
+          newUserInputs[ny][nx] = 1;
+          blank(nx, ny); // 隣接するマスも再帰的にチェック
+        }
+      }
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -193,15 +173,18 @@ const Home = () => {
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
                     style={{
-                      backgroundColor: bomb === -1 ? '#00ff1a' : '#bbb',
+                      backgroundColor: bomb === -1 ? '#e4e4e4' : '#bbb',
                       // ...(bomb === 0 && { backgroundPosition: `${-30 * n}px 0` }),
                     }}
                   >
                     {bomb !== -1 && bomb !== 0 && (
                       <div
-                        className={styles.reset}
+                        className={styles.aaaa}
                         style={{ backgroundPosition: `${-30 * (board[y][x] - 1)}px 0` }}
                       />
+                    )}
+                    {bomb === 11 && (
+                      <div className={styles.aaaa} style={{ backgroundPosition: `330px 0` }} />
                     )}
                   </div>
                 )),

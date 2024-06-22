@@ -56,11 +56,10 @@
   height: 35px;
   color: #f00;
   background: #bbb;
-  border: 2px outset #888;
   box-shadow: 1px 1px 2px #888; /* タイマー、リセット、フラッグに適用する影 */
 }
 
-.reset {
+.aaaa {
   width: 30px;
   height: 30px;
   background-image: url('../assets/images/icons.png');
@@ -69,16 +68,16 @@
 .backgroundmap {
   display: grid;
   grid-template-columns: repeat(9, 30px); /* 16列に設定 */
-  gap: 2px;
 }
 
 .cellStyle {
   width: 30px;
   height: 30px;
   background: #bdbdbd;
+  border: 5px outset #888;
 
   /* background-image: url('../assets/images/icons.png'); */
-  border: solid 1px;
+
   border-color: #fff #7b7b7b #7b7b7b #fff;
   box-shadow: 1px 1px 1px #888; /* セルに適用する影 */
 }
