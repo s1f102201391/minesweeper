@@ -44,19 +44,19 @@ const Home = () => {
   // 9 -> 石とはてな
   // 10 -> 石と旗
   // 11 -> ボムセル
-  const [board, setBoard] = useState([
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ]);
 
-  const noboard = structuredClone(board);
+  const board = [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  ];
+  // structuredClone(board);
 
   const directions = [
     [0, 1], //下
@@ -78,7 +78,7 @@ const Home = () => {
   // クリックしたとき
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
-  const newBoard = structuredClone(board);
+  // const noboard = structuredClone(noboard);
 
   //右クリック
   const clickR = (x: number, y: number) => {
@@ -109,19 +109,10 @@ const Home = () => {
         }
       }
       console.log(inputfilter(1));
-
-      // 爆弾チェックと周囲の爆弾数を更新
-      if (newBombMap[y][x] === 1) {
-        newBoard[y][x] = 11; // 爆弾があるマスを示す特別な値
-      } else {
-        blank(x, y); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
-      }
     }
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
-
-    setBoard(newBoard);
   };
 
   function blank(x: number, y: number) {
@@ -129,39 +120,33 @@ const Home = () => {
     for (const [dx, dy] of directions) {
       const nx = x + dx;
       const ny = y + dy;
-      if (newBoard[ny] !== undefined && newBoard[ny][nx] !== undefined) {
+      if (board[ny] !== undefined && board[ny][nx] !== undefined) {
         if (newBombMap[ny][nx] === 1) {
           count++;
         }
       }
     }
-    newBoard[y][x] = count;
+    board[y][x] = count;
     if (count === 0) {
       // このマスの周りに爆弾がない場合
       for (const [dx, dy] of directions) {
         const nx = x + dx;
         const ny = y + dy;
-        if (
-          newBoard[ny] !== undefined &&
-          newBoard[ny][nx] !== undefined &&
-          newUserInputs[ny][nx] === 0
-        ) {
-          newUserInputs[ny][nx] = 1;
+        if (board[ny] !== undefined && board[ny][nx] !== undefined && board[ny][nx] === -1) {
           blank(nx, ny); // 隣接するマスも再帰的にチェック
         }
       }
     }
   }
-  console.table(newUserInputs);
-  console.table(newBoard);
+  // console.table(newUserInputs);
   //旗置く
   for (let d = 0; d < 9; d++) {
     for (let c = 0; c < 9; c++) {
       if (userInputs[c][d] === 2) {
-        noboard[c][d] = 10;
+        board[c][d] = 10;
       }
       if (userInputs[c][d] === 0) {
-        noboard[c][d] = -1;
+        board[c][d] = -1;
       }
     }
   }
@@ -170,7 +155,7 @@ const Home = () => {
     for (let d = 0; d < 9; d++) {
       for (let c = 0; c < 9; c++) {
         if (bombMap[c][d] === 1) {
-          noboard[c][d] = 11;
+          board[c][d] = 11;
         }
       }
     }
@@ -180,13 +165,14 @@ const Home = () => {
     for (let c = 0; c < 9; c++) {
       if (userInputs[c][d] === 1) {
         if (bombMap[c][d] === 1) {
-          noboard[c][d] = 11; // 爆弾があるマスを示す特別な値
+          board[c][d] = 11; // 爆弾があるマスを示す特別な値
         } else {
           blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
         }
       }
     }
   }
+  console.table(board);
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
@@ -212,19 +198,18 @@ const Home = () => {
                     for (let c = 0; c < 9; c++) {
                       newBombMap[c][d] = 0;
                       newUserInputs[c][d] = 0;
-                      newBoard[c][d] = -1;
+                      board[c][d] = -1;
                     }
                   }
                   setBombMap(newBombMap);
                   setUserInputs(newUserInputs);
-                  setBoard(newBoard);
                 }}
               />
               <div className={styles.timer}>999</div>
             </div>
             {/* マップ */}
             <div className={styles.backgroundmap}>
-              {noboard.map((row, y) =>
+              {board.map((row, y) =>
                 row.map((bomb, x) => (
                   <div
                     className={styles.cellStyle}
