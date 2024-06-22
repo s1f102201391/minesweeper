@@ -35,9 +35,8 @@ const Home = () => {
   ]);
 
   // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
-  // const isFailure = userInputs.some((row, y) =>
-  //   row.some((input, x) => input === 1 && bombMap[y][x] === 1),
-  // );
+  const isFailure = (userInputs: number[][], bombMap: number[][]) =>
+    userInputs.some((row, y) => row.some((input, x) => input === 1 && bombMap[y][x] === 1));
 
   // -1 -> 石
   // 0 -> 画像無しセル
@@ -86,6 +85,13 @@ const Home = () => {
     if (newUserInputs[y][x] === 1) return;
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
+    if (newUserInputs[y][x] === 2) {
+      newBoard[y][x] = 10;
+    }
+    if (newUserInputs[y][x] === 0) {
+      newBoard[y][x] = -1;
+    }
+    setBoard(newBoard);
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -120,6 +126,16 @@ const Home = () => {
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
     setBoard(newBoard);
+    if (isFailure(newUserInputs, newBombMap)) {
+      for (let d = 0; d < 9; d++) {
+        for (let c = 0; c < 9; c++) {
+          if (newBombMap[c][d] === 1) {
+            newBoard[c][d] = 11;
+          }
+        }
+      }
+    }
+    setBoard(newBoard);
   };
 
   function blank(x: number, y: number) {
@@ -151,6 +167,7 @@ const Home = () => {
     }
   }
   console.table(newUserInputs);
+  console.table(newBoard);
 
   return (
     <div className={styles.container}>
@@ -169,7 +186,22 @@ const Home = () => {
             {/* タイマー・ニコちゃん・旗 */}
             <div className={styles.gamehead}>
               <div className={styles.flag}>999</div>
-              <div className={styles.reset} />
+              <button
+                className={styles.reset}
+                style={{ backgroundPosition: `30px 0` }}
+                onClick={() => {
+                  for (let d = 0; d < 9; d++) {
+                    for (let c = 0; c < 9; c++) {
+                      newBombMap[c][d] = 0;
+                      newUserInputs[c][d] = 0;
+                      newBoard[c][d] = -1;
+                    }
+                  }
+                  setBombMap(newBombMap);
+                  setUserInputs(newUserInputs);
+                  setBoard(newBoard);
+                }}
+              />
               <div className={styles.timer}>999</div>
             </div>
             {/* マップ */}
@@ -182,7 +214,7 @@ const Home = () => {
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={() => clickR(x, y)}
                     style={{
-                      backgroundColor: bomb === -1 ? '#e4e4e4' : '#bbb',
+                      backgroundColor: bomb === -1 ? '#e4e4e4' : bomb === 10 ? '#e4e4e4' : '#bbb',
                       // ...(bomb === 0 && { backgroundPosition: `${-30 * n}px 0` }),
                     }}
                   >
@@ -194,6 +226,9 @@ const Home = () => {
                     )}
                     {bomb === 11 && (
                       <div className={styles.aaaa} style={{ backgroundPosition: `330px 0` }} />
+                    )}
+                    {bomb === 10 && (
+                      <div className={styles.aaaa} style={{ backgroundPosition: `300px 0` }} />
                     )}
                   </div>
                 )),
