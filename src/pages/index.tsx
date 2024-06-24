@@ -5,34 +5,10 @@ const Home = () => {
   // const [sampleVal, setSampleVal] = useState(0);
   // 0 -> 未クリック
   // 1 -> 左クリック
-  // 2 -> はてな
-  // 3 -> 旗
-  const [userInputs, setUserInputs] = useState<(0 | 1 | 2 | 3)[][]>([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  // 2 -> 旗
 
-  // const bombCount = 10;
   // 0 -> ボム無し
   // 1 -> ボム有り
-  const [bombMap, setBombMap] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
 
   // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = (userInputs: number[][], bombMap: number[][]) =>
@@ -45,18 +21,10 @@ const Home = () => {
   // 10 -> 石と旗
   // 11 -> ボムセル
 
-  const board = [
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ];
-  // structuredClone(board);
+  const board = [...Array(9)].map((_, y) => [...Array(9)].map((_, x) => ((y + x + 1) % 13) - 1));
+  const zeroBoard = [...Array(9)].map(() => [...Array(9)].map(() => 0));
+  const [userInputs, setUserInputs] = useState(zeroBoard);
+  const [bombMap, setBombMap] = useState(zeroBoard);
 
   const directions = [
     [0, 1], //下
@@ -75,15 +43,15 @@ const Home = () => {
     // max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
   }
-  // クリックしたとき
+
   const newBombMap = structuredClone(bombMap);
   const newUserInputs = structuredClone(userInputs);
-  // const noboard = structuredClone(noboard);
 
   //右クリック
   const clickR = (x: number, y: number) => {
     //デフォルトの右クリックのメニューが出ないようにする
     document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+    //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
     newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
     setUserInputs(newUserInputs);
@@ -114,7 +82,7 @@ const Home = () => {
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
   };
-
+  //空白連鎖
   function blank(x: number, y: number) {
     let count = 0;
     for (const [dx, dy] of directions) {
@@ -138,7 +106,6 @@ const Home = () => {
       }
     }
   }
-  // console.table(newUserInputs);
   //旗置く
   for (let d = 0; d < 9; d++) {
     for (let c = 0; c < 9; c++) {
@@ -150,7 +117,7 @@ const Home = () => {
       }
     }
   }
-  //爆弾
+  //爆弾踏んだ時に爆弾表示
   if (isFailure(userInputs, bombMap)) {
     for (let d = 0; d < 9; d++) {
       for (let c = 0; c < 9; c++) {
@@ -165,7 +132,7 @@ const Home = () => {
     for (let c = 0; c < 9; c++) {
       if (userInputs[c][d] === 1) {
         if (bombMap[c][d] === 1) {
-          board[c][d] = 11; // 爆弾があるマスを示す特別な値
+          board[c][d] = 11; // 爆弾があるマス
         } else {
           blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
         }
@@ -246,14 +213,6 @@ const Home = () => {
 
 export default Home;
 
-/* // const [sampleVal, setSampleVal] = useState(0);
-//   console.log(sampleVal);
-//   return (
-//     <div className={styles.container}>
-//       <div
-//         className={styles.sampleStyle}
-//         style={{ backgroundPosition: `${sampleVal * -30}px 0` }}
-//       />
-//       <button onClick={() => setSampleVal((val) => (val + 1) % 14)}>Sample</button>
-//     </div>
-//   ); */
+// アロー関数の()の中を指定しないと一個前の更新の情報になる
+//clickHandlerの中はクリックされたことが保証されているが、それ以外はされていないのでfor文で確かめる必要あり
+//userImputはclickHandlerの外で変更したくないので別の条件式を考える
