@@ -80,7 +80,21 @@
 
 .backgroundmap {
   display: grid;
-  grid-template-columns: repeat(9, 39px); /* 16列に設定 */
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.backgroundmap.easy {
+  grid-template-columns: repeat(9, 34px); /* 初級の列設定 */
+}
+
+.backgroundmap.middle {
+  grid-template-columns: repeat(16, 34px); /* 中級の列設定 */
+}
+
+.backgroundmap.hard {
+  grid-template-columns: repeat(30, 34px); /* 上級の列設定 */
 }
 
 .cellStyle {
@@ -88,10 +102,7 @@
   width: 30px;
   height: 30px;
   background: #bdbdbd;
-  border: solid 4px #888;
-
-  /* background-image: url('../assets/images/icons.png'); */
-
+  border: solid 2px #888;
   border-color: #fff #7b7b7b #7b7b7b #fff;
   box-shadow: 1px 1px 1px #888; /* セルに適用する影 */
 }
