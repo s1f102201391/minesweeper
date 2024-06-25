@@ -9,6 +9,7 @@ const Home = () => {
   const [cols, setCols] = useState(initialCols);
   const [bomb, setbombCount] = useState(bombCount);
   const [difficulty, setDifficulty] = useState('easy');
+  const [remainingBombs, setRemainingBombs] = useState(bombCount);
 
   // ボードを生成する関数
   const createBoard = (rows: number, cols: number) => {
@@ -85,8 +86,18 @@ const Home = () => {
     document.getElementsByTagName('html')[0].oncontextmenu = () => false;
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
-    newUserInputs[y][x] = newUserInputs[y][x] === 2 ? 0 : 2;
+    if (newUserInputs[y][x] === 2) {
+      newUserInputs[y][x] = 0;
+      setRemainingBombs((prev) => prev + 1); // 旗を外した場合は+1
+    } else {
+      newUserInputs[y][x] = 2;
+      setRemainingBombs((prev) => prev - 1); // 旗を置いた場合は-1
+    }
     setUserInputs(newUserInputs);
+    const remainingBombsElement = document.getElementById('remainingBombs');
+    if (remainingBombsElement) {
+      remainingBombsElement.innerText = remainingBombs.toString(); // 爆弾数を表示
+    }
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -160,6 +171,11 @@ const Home = () => {
     setDifficulty(difficulty);
     setUserInputs(createBoard(newRows, newCols));
     setBombMap(createBoard(newRows, newCols));
+    setRemainingBombs(newBomb);
+    const remainingBombsElement = document.getElementById('remainingBombs');
+    if (remainingBombsElement) {
+      remainingBombsElement.innerText = newBomb.toString();
+    }
   };
 
   //旗置く
@@ -245,7 +261,9 @@ const Home = () => {
           <div className={styles.boardstyle}>
             {/* タイマー・ニコちゃん・旗 */}
             <div className={styles.gamehead}>
-              <div className={styles.flag}>{bombCount}</div>
+              <div className={styles.flag} id="remainingBombs">
+                {remainingBombs}
+              </div>
               <button
                 className={styles.reset}
                 style={{ backgroundPosition: `30px 0` }}
@@ -259,6 +277,11 @@ const Home = () => {
                   }
                   setBombMap(createBoard(rows, cols));
                   setUserInputs(createBoard(rows, cols));
+                  setRemainingBombs(bombCount);
+                  const remainingBombsElement = document.getElementById('remainingBombs');
+                  if (remainingBombsElement) {
+                    remainingBombsElement.innerText = remainingBombs.toString();
+                  }
                   setCount(0);
                   stopTimer();
                   const timerElement = document.getElementById('timer');
