@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
@@ -35,6 +35,41 @@ const Home = () => {
     [-1, 1], //左下
     [-1, -1], //左上
   ];
+  //タイマー
+  const [count, setCount] = useState(0);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+
+  //タイマーの開始と停止関数
+  const startTimer = () => {
+    if (!timerId) {
+      const id = setInterval(() => {
+        setCount((prevCount) => {
+          if (prevCount >= 999) {
+            clearInterval(id);
+            setTimerId(null);
+            return 999;
+          }
+          return prevCount + 1;
+        });
+      }, 1000);
+      setTimerId(id);
+    }
+  };
+  const stopTimer = () => {
+    if (timerId) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
+  };
+
+  //タイマーのクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, [timerId]);
 
   //ランダム取得
   function getRandomInt(min: number, max: number) {
@@ -58,6 +93,7 @@ const Home = () => {
     console.log(x, y);
     if (userInputs[y][x] === 0) {
       newUserInputs[y][x] = 1;
+      startTimer(); // タイマーを開始
 
       // 初回クリック時の爆弾設置
       const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
@@ -147,6 +183,7 @@ const Home = () => {
         }
       }
     }
+    stopTimer(); // タイマーを停止
   }
 
   // 爆弾チェックと周囲の爆弾数を更新
@@ -170,13 +207,34 @@ const Home = () => {
       <div className={styles.allall}>
         {/* 上の部分 */}
         <div className={styles.head}>
-          <div className={styles.easy} onClick={() => changeBoardSize(9, 9, 'easy', 10)}>
+          <div
+            className={styles.easy}
+            onClick={() => {
+              changeBoardSize(9, 9, 'easy', 10);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             初級
           </div>
-          <div className={styles.middle} onClick={() => changeBoardSize(16, 16, 'middle', 40)}>
+          <div
+            className={styles.middle}
+            onClick={() => {
+              changeBoardSize(16, 16, 'middle', 40);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             中級
           </div>
-          <div className={styles.hard} onClick={() => changeBoardSize(16, 30, 'hard', 99)}>
+          <div
+            className={styles.hard}
+            onClick={() => {
+              changeBoardSize(16, 30, 'hard', 99);
+              setCount(0);
+              stopTimer();
+            }}
+          >
             上級
           </div>
           <div className={styles.custom}>カスタム</div>
@@ -187,7 +245,7 @@ const Home = () => {
           <div className={styles.boardstyle}>
             {/* タイマー・ニコちゃん・旗 */}
             <div className={styles.gamehead}>
-              <div className={styles.flag}>999</div>
+              <div className={styles.flag}>{bombCount}</div>
               <button
                 className={styles.reset}
                 style={{ backgroundPosition: `30px 0` }}
@@ -201,9 +259,15 @@ const Home = () => {
                   }
                   setBombMap(createBoard(rows, cols));
                   setUserInputs(createBoard(rows, cols));
+                  setCount(0);
+                  stopTimer();
+                  const timerElement = document.getElementById('timer');
+                  if (timerElement) {
+                    timerElement.innerText = count.toString();
+                  }
                 }}
               />
-              <div className={styles.timer}>999</div>
+              <div className={styles.timer}>{count}</div>
             </div>
             {/* マップ */}
             <div className={`${styles.backgroundmap} ${styles[difficulty]}`}>
