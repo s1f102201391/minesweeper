@@ -97,6 +97,10 @@
   grid-template-columns: repeat(30, 34px); /* 上級の列設定 */
 }
 
+.backgroundmap.custom {
+  grid-template-columns: repeat(30, 34px); /* 上級の列設定 */
+}
+
 .cellStyle {
   box-sizing: content-box;
   width: 30px;

@@ -16,6 +16,27 @@ const Home = () => {
     return [...Array(rows)].map(() => Array(cols).fill(0));
   };
 
+  //リセットボタンの関数
+  const reset = () => {
+    for (let d = 0; d < cols; d++) {
+      for (let c = 0; c < rows; c++) {
+        newBombMap[c][d] = 0;
+        newUserInputs[c][d] = 0;
+        board[c][d] = -1;
+      }
+    }
+
+    const firstbomb =
+      difficulty === 'easy' ? 10 : difficulty === 'middle' ? 40 : difficulty === 'hard' ? 99 : 0;
+
+    setBombMap(createBoard(rows, cols));
+    setUserInputs(createBoard(rows, cols));
+    setRemainingBombs(firstbomb);
+
+    setCount(0);
+    stopTimer();
+  };
+
   // 初期状態のボードと爆弾マップ
   const [userInputs, setUserInputs] = useState(createBoard(initialRows, initialCols));
   const [bombMap, setBombMap] = useState(createBoard(initialRows, initialCols));
@@ -94,10 +115,7 @@ const Home = () => {
       setRemainingBombs((prev) => prev - 1); // 旗を置いた場合は-1
     }
     setUserInputs(newUserInputs);
-    const remainingBombsElement = document.getElementById('remainingBombs');
-    if (remainingBombsElement) {
-      remainingBombsElement.innerText = remainingBombs.toString(); // 爆弾数を表示
-    }
+    setRemainingBombs(remainingBombs - 1);
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -172,10 +190,6 @@ const Home = () => {
     setUserInputs(createBoard(newRows, newCols));
     setBombMap(createBoard(newRows, newCols));
     setRemainingBombs(newBomb);
-    const remainingBombsElement = document.getElementById('remainingBombs');
-    if (remainingBombsElement) {
-      remainingBombsElement.innerText = newBomb.toString();
-    }
   };
 
   //旗置く
@@ -253,7 +267,27 @@ const Home = () => {
           >
             上級
           </div>
-          <div className={styles.custom}>カスタム</div>
+          <div
+            className={styles.custom}
+            onClick={() => {
+              changeBoardSize(16, 30, 'custom', 99);
+              setCount(0);
+              stopTimer();
+            }}
+          >
+            カスタム
+          </div>
+          {difficulty === 'custom' && (
+            <div>
+              <label>横幅：</label>
+              <input type="number" />
+              <label>縦幅：</label>
+              <input type="number" />
+              <label>爆弾数：</label>
+              <input type="number" />
+              <button>適用</button>
+            </div>
+          )}
         </div>
 
         {/* 灰色全体 */}
@@ -267,28 +301,7 @@ const Home = () => {
               <button
                 className={styles.reset}
                 style={{ backgroundPosition: `30px 0` }}
-                onClick={() => {
-                  for (let d = 0; d < cols; d++) {
-                    for (let c = 0; c < rows; c++) {
-                      newBombMap[c][d] = 0;
-                      newUserInputs[c][d] = 0;
-                      board[c][d] = -1;
-                    }
-                  }
-                  setBombMap(createBoard(rows, cols));
-                  setUserInputs(createBoard(rows, cols));
-                  setRemainingBombs(bombCount);
-                  const remainingBombsElement = document.getElementById('remainingBombs');
-                  if (remainingBombsElement) {
-                    remainingBombsElement.innerText = remainingBombs.toString();
-                  }
-                  setCount(0);
-                  stopTimer();
-                  const timerElement = document.getElementById('timer');
-                  if (timerElement) {
-                    timerElement.innerText = count.toString();
-                  }
-                }}
+                onClick={() => reset()}
               />
               <div className={styles.timer}>{count}</div>
             </div>
