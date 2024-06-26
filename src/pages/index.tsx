@@ -81,9 +81,9 @@ const Home = () => {
   const newUserInputs = structuredClone(userInputs);
 
   //右クリック
-  const clickR = (x: number, y: number) => {
+  const clickR = (x: number, y: number, event: React.MouseEvent) => {
     //デフォルトの右クリックのメニューが出ないようにする
-    document.getElementsByTagName('html')[0].oncontextmenu = () => false;
+    event.preventDefault();
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
     if (newUserInputs[y][x] === 2) {
@@ -300,7 +300,7 @@ const Home = () => {
                     className={styles.cellStyle}
                     key={`${x}-${y}`}
                     onClick={() => clickHandler(x, y)}
-                    onContextMenu={() => clickR(x, y)}
+                    onContextMenu={(event) => clickR(x, y, event)}
                     style={{
                       backgroundColor: bomb === -1 ? '#e4e4e4' : bomb === 10 ? '#e4e4e4' : '#bbb',
                     }}
