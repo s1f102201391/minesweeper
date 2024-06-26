@@ -35,6 +35,7 @@ const Home = () => {
     setBombMap(createBoard(rows, cols));
     setUserInputs(createBoard(rows, cols));
     setRemainingBombs(firstbomb);
+    setRemainingBombs(bomb);
 
     setCount(0);
     stopTimer();
@@ -115,8 +116,10 @@ const Home = () => {
     if (clearfilter(0) === remainingBombs) return;
     if (newUserInputs[y][x] === 2) {
       newUserInputs[y][x] = 0;
+      startTimer();
       setRemainingBombs(remainingBombs + 1); // 旗を外した場合は+1
     } else {
+      startTimer();
       newUserInputs[y][x] = 2;
       setRemainingBombs(remainingBombs - 1); // 旗を置いた場合は-1
     }
@@ -217,7 +220,7 @@ const Home = () => {
     for (let d = 0; d < cols; d++) {
       for (let c = 0; c < rows; c++) {
         if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
-          if (userInputs[c][d] === 0) {
+          if (userInputs[c][d] !== 1) {
             board[c][d] = 11;
           } else {
             board[c][d] = 25;
@@ -275,7 +278,14 @@ const Home = () => {
     // setCols(tempcols);
     // setbombCount(tempbomb);
     if (tempcols * temprows < tempbomb) return;
-    changeBoardSize(temprows, tempcols, 'custom', tempbomb);
+    if (temprows === null) return;
+    if (tempcols === null) return;
+    if (tempbomb < 0) return;
+    if (tempcols % 1 !== 0) return;
+    if (temprows % 1 !== 0) return;
+    changeBoardSize(tempcols, temprows, 'custom', tempbomb);
+    setCount(0);
+    stopTimer();
   };
   return (
     <div className={styles.container}>
@@ -315,7 +325,7 @@ const Home = () => {
           <div
             className={styles.custom}
             onClick={() => {
-              changeBoardSize(16, 30, 'custom', 10);
+              changeBoardSize(9, 9, 'custom', 10);
               setCount(0);
               stopTimer();
             }}
@@ -325,9 +335,9 @@ const Home = () => {
         </div>
         {difficulty === 'custom' && (
           <div className={styles.customApply}>
-            <label>横幅：</label>
+            <label>幅：</label>
             <input type="number" onChange={handleRowsChange} />
-            <label>縦幅：</label>
+            <label>高さ：</label>
             <input type="number" onChange={handleColsChange} />
             <label>爆弾数：</label>
             <input type="number" onChange={handleBombChange} />
@@ -421,3 +431,12 @@ export default Home;
 // 9 -> 石とはてな
 // 10 -> 石と旗
 // 11 -> ボムセル
+
+//旗置いてもタイマー@
+//はたおいたばくだんもあかくなる@
+//適用で初期値@
+//縦と横逆@
+//小数点@
+//ばくだんがまいなすになる@
+//適用でタイマーリセットしない@
+//
