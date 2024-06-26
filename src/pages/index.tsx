@@ -378,7 +378,7 @@ const Home = () => {
             </div>
             {/* マップ */}
             <div
-              className={`${styles.backgroundmap} ${difficulty === 'custom' ? styles.customBackgroundmap : styles[difficulty]}`}
+              className={`${styles.backgroundmap} ${difficulty === 'custom' ? styles['customBackgroundmap'] : styles[difficulty]}`}
               style={
                 difficulty === 'custom'
                   ? { gridTemplateColumns: `repeat(${cols}, 40px)` }
