@@ -135,6 +135,7 @@ const Home = () => {
       // 初回クリック時の爆弾設置
       const inputfilter = (col: number) => newBombMap.flat().filter((v) => v === col).length;
       if (inputfilter(1) === 0) {
+        if (userInputs[y][x] === 2) return;
         // まだ爆弾が設置されていない場合
         while (inputfilter(1) < bomb) {
           // 爆弾が10個になるまで設置
@@ -155,6 +156,7 @@ const Home = () => {
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
+    if (userInputs[y][x] === 2) return;
     blank(x, y);
   };
 
@@ -291,6 +293,7 @@ const Home = () => {
     setCount(0);
     stopTimer();
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
