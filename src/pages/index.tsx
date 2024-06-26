@@ -297,18 +297,18 @@ const Home = () => {
           >
             カスタム
           </div>
-          {difficulty === 'custom' && (
-            <div className={styles.customApply}>
-              <label>横幅：</label>
-              <input type="number" onChange={handleRowsChange} />
-              <label>縦幅：</label>
-              <input type="number" onChange={handleColsChange} />
-              <label>爆弾数：</label>
-              <input type="number" onChange={handleBombChange} />
-              <button onClick={() => applyClick()}>適用</button>
-            </div>
-          )}
         </div>
+        {difficulty === 'custom' && (
+          <div className={styles.customApply}>
+            <label>横幅：</label>
+            <input type="number" onChange={handleRowsChange} />
+            <label>縦幅：</label>
+            <input type="number" onChange={handleColsChange} />
+            <label>爆弾数：</label>
+            <input type="number" onChange={handleBombChange} />
+            <button onClick={() => applyClick()}>適用</button>
+          </div>
+        )}
 
         {/* 灰色全体 */}
         <div className={styles.allbackground}>
