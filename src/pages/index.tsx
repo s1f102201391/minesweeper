@@ -45,8 +45,6 @@ const Home = () => {
   const [userInputs, setUserInputs] = useState(createBoard(initialRows, initialCols));
   const [bombMap, setBombMap] = useState(createBoard(initialRows, initialCols));
 
-  // const isPlaying = (userInputs: number[][]) =>
-  //   userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = (userInputs: number[][], bombMap: number[][]) =>
     userInputs.some((row, y) => row.some((input, x) => input === 1 && bombMap[y][x] === 1));
 
@@ -281,9 +279,6 @@ const Home = () => {
     }
   }
 
-  console.table(board);
-  console.table(userInputs);
-  console.table(bombMap);
   //inputの値を仮の関数にぶち込む
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     settempRows(Number(e.target.value));
@@ -296,9 +291,6 @@ const Home = () => {
   };
 
   const applyClick = () => {
-    // setRows(temprows);
-    // setCols(tempcols);
-    // setbombCount(tempbomb);
     if (tempcols * temprows < tempbomb) return;
     if (temprows === null) return;
     if (tempcols === null) return;

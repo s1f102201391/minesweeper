@@ -7,12 +7,6 @@
   padding: 0 0.5rem;
 }
 
-/* .sampleStyle {
-  width: 30px;
-  height: 30px;
-  background: url('../assets/images/icons.png') no-repeat;
-} */
-
 .boardstyle {
   display: flex;
   flex-direction: column;
