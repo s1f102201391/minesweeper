@@ -44,7 +44,8 @@ const Home = () => {
   const [userInputs, setUserInputs] = useState(createBoard(initialRows, initialCols));
   const [bombMap, setBombMap] = useState(createBoard(initialRows, initialCols));
 
-  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
+  // const isPlaying = (userInputs: number[][]) =>
+  //   userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = (userInputs: number[][], bombMap: number[][]) =>
     userInputs.some((row, y) => row.some((input, x) => input === 1 && bombMap[y][x] === 1));
 
@@ -110,15 +111,16 @@ const Home = () => {
     event.preventDefault();
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
+    if (isFailure(userInputs, bombMap)) return;
+    if (clearfilter(0) === remainingBombs) return;
     if (newUserInputs[y][x] === 2) {
       newUserInputs[y][x] = 0;
-      setRemainingBombs((prev) => prev + 1); // 旗を外した場合は+1
+      setRemainingBombs(remainingBombs + 1); // 旗を外した場合は+1
     } else {
       newUserInputs[y][x] = 2;
-      setRemainingBombs((prev) => prev - 1); // 旗を置いた場合は-1
+      setRemainingBombs(remainingBombs - 1); // 旗を置いた場合は-1
     }
     setUserInputs(newUserInputs);
-    setRemainingBombs(remainingBombs - 1);
   };
 
   const clickHandler = (x: number, y: number) => {
@@ -144,6 +146,8 @@ const Home = () => {
         }
       }
       console.log(inputfilter(1));
+      if (isFailure(userInputs, bombMap)) return;
+      if (clearfilter(0) === remainingBombs) return;
     }
 
     setBombMap(newBombMap);
@@ -208,15 +212,35 @@ const Home = () => {
   }
 
   //爆弾踏んだ時に爆弾表示
+  let nico = 0;
   if (isFailure(userInputs, bombMap)) {
     for (let d = 0; d < cols; d++) {
       for (let c = 0; c < rows; c++) {
         if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
-          board[c][d] = 11;
+          if (userInputs[c][d] === 0) {
+            board[c][d] = 11;
+          } else {
+            board[c][d] = 25;
+          }
         }
       }
     }
     stopTimer(); // タイマーを停止
+    nico = 1;
+  }
+
+  //クリア
+  const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
+  if (clearfilter(0) === remainingBombs) {
+    for (let d = 0; d < cols; d++) {
+      for (let c = 0; c < rows; c++) {
+        if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
+          board[c][d] = 10;
+        }
+      }
+    }
+    stopTimer();
+    nico = 2;
   }
 
   // 爆弾チェックと周囲の爆弾数を更新
@@ -224,7 +248,7 @@ const Home = () => {
     for (let c = 0; c < rows; c++) {
       if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 1) {
         if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
-          board[c][d] = 11; // 爆弾があるマス
+          board[c][d] = 25; // 爆弾があるマス
         } else {
           blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
         }
@@ -290,7 +314,7 @@ const Home = () => {
           <div
             className={styles.custom}
             onClick={() => {
-              changeBoardSize(16, 30, 'custom', 99);
+              changeBoardSize(16, 30, 'custom', 10);
               setCount(0);
               stopTimer();
             }}
@@ -320,8 +344,10 @@ const Home = () => {
               </div>
               <button
                 className={styles.reset}
-                style={{ backgroundPosition: `30px 0` }}
                 onClick={() => reset()}
+                style={{
+                  backgroundPosition: nico === 0 ? `90px 0` : nico === 1 ? `30px 0` : `60px 0`,
+                }}
               />
               <div className={styles.timer}>{count}</div>
             </div>
@@ -330,7 +356,7 @@ const Home = () => {
               className={`${styles.backgroundmap} ${styles[difficulty]}`}
               style={
                 difficulty === 'custom'
-                  ? { gridTemplateColumns: `repeat(${cols}, 34px)` }
+                  ? { gridTemplateColumns: `repeat(${cols}, 40px)` }
                   : undefined
               }
             >
@@ -342,7 +368,20 @@ const Home = () => {
                     onClick={() => clickHandler(x, y)}
                     onContextMenu={(event) => clickR(x, y, event)}
                     style={{
-                      backgroundColor: bomb === -1 ? '#e4e4e4' : bomb === 10 ? '#e4e4e4' : '#bbb',
+                      backgroundColor:
+                        bomb === -1
+                          ? '#c6c6c6'
+                          : bomb === 10
+                            ? '#c6c6c6'
+                            : bomb === 25
+                              ? '#f00'
+                              : '#c6c6c6',
+                      borderColor:
+                        bomb === -1
+                          ? '#fff #7b7b7b #7b7b7b #fff'
+                          : bomb === 10
+                            ? '#fff #7b7b7b #7b7b7b #fff'
+                            : '#7b7b7b #fff #fff #7b7b7b',
                     }}
                   >
                     {bomb !== -1 && bomb !== 0 && (
