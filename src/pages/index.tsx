@@ -247,9 +247,10 @@ const Home = () => {
   };
 
   const applyClick = () => {
-    setRows(temprows);
-    setCols(tempcols);
-    setbombCount(tempbomb);
+    // setRows(temprows);
+    // setCols(tempcols);
+    // setbombCount(tempbomb);
+    changeBoardSize(temprows, tempcols, 'custom', tempbomb);
   };
   return (
     <div className={styles.container}>
@@ -297,7 +298,7 @@ const Home = () => {
             カスタム
           </div>
           {difficulty === 'custom' && (
-            <div>
+            <div className={styles.customApply}>
               <label>横幅：</label>
               <input type="number" onChange={handleRowsChange} />
               <label>縦幅：</label>
@@ -325,7 +326,14 @@ const Home = () => {
               <div className={styles.timer}>{count}</div>
             </div>
             {/* マップ */}
-            <div className={`${styles.backgroundmap} ${styles[difficulty]}`}>
+            <div
+              className={`${styles.backgroundmap} ${styles[difficulty]}`}
+              style={
+                difficulty === 'custom'
+                  ? { gridTemplateColumns: `repeat(${cols}, 34px)` }
+                  : undefined
+              }
+            >
               {board.map((row, y) =>
                 row.map((bomb, x) => (
                   <div

@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 100%;
   padding: 0 0.5rem;
 }
 
@@ -26,6 +26,7 @@
 .head {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   width: 100%;
 }
 
@@ -86,15 +87,15 @@
 }
 
 .backgroundmap.easy {
-  grid-template-columns: repeat(9, 34px); /* 初級の列設定 */
+  grid-template-columns: repeat(9, 33.5px); /* 初級の列設定 */
 }
 
 .backgroundmap.middle {
-  grid-template-columns: repeat(16, 34px); /* 中級の列設定 */
+  grid-template-columns: repeat(16, 33.5px); /* 中級の列設定 */
 }
 
 .backgroundmap.hard {
-  grid-template-columns: repeat(30, 34px); /* 上級の列設定 */
+  grid-template-columns: repeat(30, 33.5px); /* 上級の列設定 */
 }
 
 .backgroundmap.custom {
@@ -124,4 +125,8 @@
   width: auto;
   height: 30px;
   background-image: url('../assets/images/icons.png');
+}
+
+.customApply {
+  flex-direction: column;
 }
