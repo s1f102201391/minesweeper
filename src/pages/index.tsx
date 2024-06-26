@@ -148,13 +148,26 @@ const Home = () => {
           }
         }
       }
-      console.log(inputfilter(1));
-      if (isFailure(userInputs, bombMap)) return;
-      if (clearfilter(0) === remainingBombs) return;
+      // console.log(inputfilter(1));
     }
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
+    blank(x, y);
+
+    if (clearfilter(0) + clearfilter(2) === remainingBombs) {
+      stopTimer();
+      for (let d = 0; d < cols; d++) {
+        for (let c = 0; c < rows; c++) {
+          if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
+            board[c][d] = 10;
+          }
+        }
+      }
+      nico = 2;
+      return;
+    }
+    if (isFailure(userInputs, bombMap)) return;
   };
 
   //空白連鎖
@@ -181,6 +194,15 @@ const Home = () => {
         ) {
           newUserInputs[ny][nx] = 1;
           blank(nx, ny);
+        }
+        if (
+          newUserInputs[ny] !== undefined &&
+          newUserInputs[ny][nx] !== undefined &&
+          newUserInputs[ny][nx] === 2
+        ) {
+          newUserInputs[ny][nx] = 1;
+          blank(nx, ny);
+          setRemainingBombs(bomb);
         }
       }
     }
