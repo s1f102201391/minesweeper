@@ -274,6 +274,7 @@ const Home = () => {
     // setRows(temprows);
     // setCols(tempcols);
     // setbombCount(tempbomb);
+    if (tempcols * temprows < tempbomb) return;
     changeBoardSize(temprows, tempcols, 'custom', tempbomb);
   };
   return (
