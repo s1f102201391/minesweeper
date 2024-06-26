@@ -8,6 +8,9 @@ const Home = () => {
   const [rows, setRows] = useState(initialRows);
   const [cols, setCols] = useState(initialCols);
   const [bomb, setbombCount] = useState(bombCount);
+  const [temprows, settempRows] = useState(initialRows);
+  const [tempcols, settempCols] = useState(initialCols);
+  const [tempbomb, settempbombCount] = useState(bombCount);
   const [difficulty, setDifficulty] = useState('easy');
   const [remainingBombs, setRemainingBombs] = useState(bombCount);
 
@@ -195,10 +198,10 @@ const Home = () => {
   //旗置く
   for (let d = 0; d < cols; d++) {
     for (let c = 0; c < rows; c++) {
-      if (userInputs[c][d] === 2) {
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 2) {
         board[c][d] = 10;
       }
-      if (userInputs[c][d] === 0) {
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
         board[c][d] = -1;
       }
     }
@@ -208,7 +211,7 @@ const Home = () => {
   if (isFailure(userInputs, bombMap)) {
     for (let d = 0; d < cols; d++) {
       for (let c = 0; c < rows; c++) {
-        if (bombMap[c][d] === 1) {
+        if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
           board[c][d] = 11;
         }
       }
@@ -219,8 +222,8 @@ const Home = () => {
   // 爆弾チェックと周囲の爆弾数を更新
   for (let d = 0; d < cols; d++) {
     for (let c = 0; c < rows; c++) {
-      if (userInputs[c][d] === 1) {
-        if (bombMap[c][d] === 1) {
+      if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 1) {
+        if (bombMap[c]?.[d] !== undefined && bombMap[c][d] === 1) {
           board[c][d] = 11; // 爆弾があるマス
         } else {
           blank(d, c); // 周囲の爆弾数を数えて、必要に応じて連鎖的に開ける
@@ -232,17 +235,22 @@ const Home = () => {
   console.table(board);
   console.table(userInputs);
   console.table(bombMap);
-
+  //inputの値を仮の関数にぶち込む
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRows(Number(e.target.value));
+    settempRows(Number(e.target.value));
   };
   const handleColsChange = (f: React.ChangeEvent<HTMLInputElement>) => {
-    setCols(Number(f.target.value));
+    settempCols(Number(f.target.value));
   };
   const handleBombChange = (g: React.ChangeEvent<HTMLInputElement>) => {
-    setbombCount(Number(g.target.value));
+    settempbombCount(Number(g.target.value));
   };
 
+  const applyClick = () => {
+    setRows(temprows);
+    setCols(tempcols);
+    setbombCount(tempbomb);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
@@ -296,7 +304,7 @@ const Home = () => {
               <input type="number" onChange={handleColsChange} />
               <label>爆弾数：</label>
               <input type="number" onChange={handleBombChange} />
-              <button>適用</button>
+              <button onClick={() => applyClick()}>適用</button>
             </div>
           )}
         </div>
