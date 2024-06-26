@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 
+type difficultyType = 'easy' | 'middle' | 'hard' | 'custom';
+
 const Home = () => {
   const initialRows = 9;
   const initialCols = 9;
@@ -11,7 +13,7 @@ const Home = () => {
   const [temprows, settempRows] = useState(initialRows);
   const [tempcols, settempCols] = useState(initialCols);
   const [tempbomb, settempbombCount] = useState(bombCount);
-  const [difficulty, setDifficulty] = useState('easy');
+  const [difficulty, setDifficulty] = useState<difficultyType>('easy');
   const [remainingBombs, setRemainingBombs] = useState(bombCount);
 
   // ボードを生成する関数
@@ -210,7 +212,7 @@ const Home = () => {
   const changeBoardSize = (
     newRows: number,
     newCols: number,
-    difficulty: string,
+    difficulty: difficultyType,
     newBomb: number,
   ) => {
     setRows(newRows);
