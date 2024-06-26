@@ -150,24 +150,12 @@ const Home = () => {
       }
       // console.log(inputfilter(1));
     }
+    if (isFailure(userInputs, bombMap)) return;
+    if (clearfilter(0) === remainingBombs) return;
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
     blank(x, y);
-
-    if (clearfilter(0) + clearfilter(2) === remainingBombs) {
-      stopTimer();
-      for (let d = 0; d < cols; d++) {
-        for (let c = 0; c < rows; c++) {
-          if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
-            board[c][d] = 10;
-          }
-        }
-      }
-      nico = 2;
-      return;
-    }
-    if (isFailure(userInputs, bombMap)) return;
   };
 
   //空白連鎖
@@ -380,7 +368,7 @@ const Home = () => {
             </div>
             {/* マップ */}
             <div
-              className={`${styles.backgroundmap} ${difficulty === 'custom' ? styles['customBackgroundmap'] : styles[difficulty]}`}
+              className={`${styles.backgroundmap} ${styles[difficulty]}`}
               style={
                 difficulty === 'custom'
                   ? { gridTemplateColumns: `repeat(${cols}, 40px)` }
