@@ -232,6 +232,17 @@ const Home = () => {
   console.table(board);
   console.table(userInputs);
   console.table(bombMap);
+
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRows(Number(e.target.value));
+  };
+  const handleColsChange = (f: React.ChangeEvent<HTMLInputElement>) => {
+    setCols(Number(f.target.value));
+  };
+  const handleBombChange = (g: React.ChangeEvent<HTMLInputElement>) => {
+    setbombCount(Number(g.target.value));
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
@@ -280,11 +291,11 @@ const Home = () => {
           {difficulty === 'custom' && (
             <div>
               <label>横幅：</label>
-              <input type="number" />
+              <input type="number" onChange={handleRowsChange} />
               <label>縦幅：</label>
-              <input type="number" />
+              <input type="number" onChange={handleColsChange} />
               <label>爆弾数：</label>
-              <input type="number" />
+              <input type="number" onChange={handleBombChange} />
               <button>適用</button>
             </div>
           )}
