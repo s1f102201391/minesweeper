@@ -1,0 +1,141 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 100%;
+  padding: 0 0.5rem;
+}
+
+.boardstyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2%;
+  margin: auto;
+  background: #c6c6c6;
+  border: 5px solid #7b7b7b;
+  border-color: #fff #7b7b7b #7b7b7b #fff;
+}
+
+.head {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.easy,
+.middle,
+.hard,
+.custom {
+  display: flex;
+  justify-content: center;
+  padding: 5%;
+  cursor: pointer;
+}
+
+.gamehead {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 2%;
+  margin: 5%;
+  background: #bbb;
+  border: 5px solid #7b7b7b;
+  border-color: #7b7b7b #fff #fff #7b7b7b;
+}
+
+.flag,
+.timer {
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 50px;
+  font-size: 2.5rem;
+  line-height: 45px;
+  color: #f00;
+  text-align: center;
+  background: #000;
+  box-shadow: 1px 1px 2px #888; /* タイマー、リセット、フラッグに適用する影 */
+}
+
+.reset {
+  box-sizing: content-box;
+  width: 19px;
+  height: 29px;
+  background: #bdbdbd;
+  background-image: url('~/src/assets/images/icons.png');
+  border: solid 10px #888;
+
+  /* background-image: url('../assets/images/icons.png'); */
+
+  border-color: #fff #7b7b7b #7b7b7b #fff;
+  box-shadow: 1px 1px 1px #888; /* セルに適用する影 */
+}
+
+.aaaa {
+  width: 30px;
+  height: 30px;
+  background-image: url('~/src/assets/images/icons.png');
+}
+
+.backgroundmap {
+  display: grid;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 5px solid #7b7b7b;
+  border-color: #7b7b7b #fff #fff #7b7b7b;
+}
+
+.backgroundmap.easy {
+  grid-template-columns: repeat(9, 40px); /* 初級の列設定 */
+}
+
+.backgroundmap.middle {
+  grid-template-columns: repeat(16, 40px); /* 中級の列設定 */
+}
+
+.backgroundmap.hard {
+  grid-template-columns: repeat(30, 40px); /* 上級の列設定 */
+}
+
+.backgroundmap.custom {
+  grid-template-columns: repeat(30, 40px); /* 上級の列設定 */
+}
+
+.cellStyle {
+  box-sizing: content-box;
+  width: 30px;
+  height: 30px;
+  background: #c6c6c6;
+  border: solid 5px #888;
+  border-color: #fff #7b7b7b #7b7b7b #fff;
+
+  /* box-shadow: 2px 2px 2px #888; セルに適用する影 */
+}
+
+.allbackground {
+  display: flex;
+}
+
+.allall {
+  display: flex;
+  flex-direction: column;
+}
+
+.sampleStyle {
+  width: auto;
+  height: 30px;
+  background-image: url('~/src/assets/images/icons.png');
+}
+
+.customApply {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px; /* 適宜調整 */
+}
