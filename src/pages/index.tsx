@@ -114,7 +114,7 @@ const Home = () => {
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
     if (isFailure(userInputs, bombMap)) return;
-    // if (clearfilter(0) === remainingBombs) return;
+    if (clearfilter(0) === remainingBombs) return;
     if (isClear === true) return;
     if (newUserInputs[y][x] === 2) {
       newUserInputs[y][x] = 0;
@@ -131,6 +131,8 @@ const Home = () => {
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     if (userInputs[y][x] === 0) {
+      if (isFailure(userInputs, bombMap)) return;
+      if (clearfilter(0) === remainingBombs) return;
       newUserInputs[y][x] = 1;
       startTimer(); // タイマーを開始
 
@@ -160,7 +162,7 @@ const Home = () => {
       return;
     }
     if (isFailure(userInputs, bombMap)) return;
-    // if (clearfilter(0) === remainingBombs) return;
+    if (clearfilter(0) === remainingBombs) return;
     if (isClear === true) return;
 
     setBombMap(newBombMap);
@@ -281,7 +283,7 @@ const Home = () => {
     stopTimer();
     nico = 2;
   }
-  // const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
+  const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
   // if (isPlaying) {
   //   if (clearfilter(0) === remainingBombs) {
   //     for (let d = 0; d < cols; d++) {
