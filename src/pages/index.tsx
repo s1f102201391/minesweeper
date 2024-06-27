@@ -47,6 +47,7 @@ const Home = () => {
   const [userInputs, setUserInputs] = useState(createBoard(initialRows, initialCols));
   const [bombMap, setBombMap] = useState(createBoard(initialRows, initialCols));
 
+  // const isPlaying = userInputs.some((row) => row.some((input) => input !== 0));
   const isFailure = (userInputs: number[][], bombMap: number[][]) =>
     userInputs.some((row, y) => row.some((input, x) => input === 1 && bombMap[y][x] === 1));
 
@@ -113,7 +114,8 @@ const Home = () => {
     //右クリックでuserInputの0と2を入れ替える
     if (newUserInputs[y][x] === 1) return;
     if (isFailure(userInputs, bombMap)) return;
-    if (clearfilter(0) === remainingBombs) return;
+    // if (clearfilter(0) === remainingBombs) return;
+    if (isClear === true) return;
     if (newUserInputs[y][x] === 2) {
       newUserInputs[y][x] = 0;
       startTimer();
@@ -151,8 +153,15 @@ const Home = () => {
       }
       // console.log(inputfilter(1));
     }
+    if (bombMap[y][x] === 1) {
+      // クリックしたセルが爆弾の場合
+      setUserInputs(newUserInputs);
+      setBombMap(newBombMap);
+      return;
+    }
     if (isFailure(userInputs, bombMap)) return;
-    if (clearfilter(0) === remainingBombs) return;
+    // if (clearfilter(0) === remainingBombs) return;
+    if (isClear === true) return;
 
     setBombMap(newBombMap);
     setUserInputs(newUserInputs);
@@ -177,10 +186,17 @@ const Home = () => {
       for (const [dx, dy] of directions) {
         const nx = x + dx;
         const ny = y + dy;
+        // if (
+        //   newBombMap[ny] !== undefined &&
+        //   newBombMap[ny][nx] !== undefined &&
+        //   newBombMap[ny][nx] === 1
+        // )
+        //   return;
         if (
           newUserInputs[ny] !== undefined &&
           newUserInputs[ny][nx] !== undefined &&
-          newUserInputs[ny][nx] === 0
+          newUserInputs[ny][nx] === 0 &&
+          bombMap[ny][nx] !== 1
         ) {
           newUserInputs[ny][nx] = 1;
           blank(nx, ny);
@@ -188,7 +204,8 @@ const Home = () => {
         if (
           newUserInputs[ny] !== undefined &&
           newUserInputs[ny][nx] !== undefined &&
-          newUserInputs[ny][nx] === 2
+          newUserInputs[ny][nx] === 2 &&
+          bombMap[ny][nx] !== 1
         ) {
           newUserInputs[ny][nx] = 1;
           blank(nx, ny);
@@ -245,8 +262,15 @@ const Home = () => {
   }
 
   //クリア
-  const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
-  if (clearfilter(0) === remainingBombs) {
+  const isClear = board.every((row, y) =>
+    row.every((cell, x) => {
+      if (bombMap[y][x] !== 1) {
+        return userInputs[y][x] === 1;
+      }
+      return true;
+    }),
+  );
+  if (isClear === true) {
     for (let d = 0; d < cols; d++) {
       for (let c = 0; c < rows; c++) {
         if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
@@ -257,7 +281,20 @@ const Home = () => {
     stopTimer();
     nico = 2;
   }
-
+  // const clearfilter = (col: number) => userInputs.flat().filter((v) => v === col).length;
+  // if (isPlaying) {
+  //   if (clearfilter(0) === remainingBombs) {
+  //     for (let d = 0; d < cols; d++) {
+  //       for (let c = 0; c < rows; c++) {
+  //         if (userInputs[c]?.[d] !== undefined && userInputs[c][d] === 0) {
+  //           board[c][d] = 10;
+  //         }
+  //       }
+  //     }
+  //     stopTimer();
+  //     nico = 2;
+  //   }
+  // }
   // 爆弾チェックと周囲の爆弾数を更新
   for (let d = 0; d < cols; d++) {
     for (let c = 0; c < rows; c++) {
@@ -283,17 +320,29 @@ const Home = () => {
   };
 
   const applyClick = () => {
-    if (tempcols * temprows < tempbomb) return;
+    if (tempcols * temprows <= tempbomb) {
+      alert('爆弾数がマス以上の場合は適用できません');
+      return;
+    }
     if (temprows === null) return;
     if (tempcols === null) return;
-    if (tempbomb < 0) return;
-    if (tempcols % 1 !== 0) return;
-    if (temprows % 1 !== 0) return;
+    if (tempbomb < 0) {
+      alert('爆弾数がマイナスの場合は適用できません');
+      return;
+    }
+    if (tempcols % 1 !== 0) {
+      alert('少数は適用できません');
+      return;
+    }
+    if (temprows % 1 !== 0) {
+      alert('少数は適用できません');
+      return;
+    }
     changeBoardSize(tempcols, temprows, 'custom', tempbomb);
     setCount(0);
     stopTimer();
   };
-
+  console.table(bombMap);
   return (
     <div className={styles.container}>
       <div className={styles.allall}>
